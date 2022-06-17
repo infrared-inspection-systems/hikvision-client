@@ -73,7 +73,9 @@ app.get('/ptz/left', (req, res) => {
     data = data;
   };
   httpClient.request(url, options, responseHandler);
-  httpClient.request(url, options2, responseHandler);
+  setTimeout(function () {
+    httpClient.request(url, options2, responseHandler);
+  }, 500);
   res.status(200).end(data); // Responding is important
 });
 
@@ -120,7 +122,9 @@ app.get('/ptz/right', (req, res) => {
     data = data;
   };
   httpClient.request(url, options, responseHandler);
-  httpClient.request(url, options2, responseHandler);
+  setTimeout(function () {
+    httpClient.request(url, options2, responseHandler);
+  }, 500);
   res.status(200).end(data); // Responding is important
 });
 
@@ -308,7 +312,9 @@ app.get('/ptz/zoomout', (req, res) => {
     data = data;
   };
   httpClient.request(url, options, responseHandler);
-  httpClient.request(url, options2, responseHandler);
+  setTimeout(function () {
+    httpClient.request(url, options2, responseHandler);
+  }, 500);
   res.status(200).end(data); // Responding is important
 });
 
