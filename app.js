@@ -77,6 +77,275 @@ app.get('/ptz/left', (req, res) => {
   res.status(200).end(data); // Responding is important
 });
 
+app.get('/ptz/right', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>60</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const options2 = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
+app.get('/ptz/up', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>60</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const options2 = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
+app.get('/ptz/down', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>-60</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const options2 = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
+app.get('/ptz/zoomin', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>-60</zoom>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const options2 = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
+app.get('/ptz/zoomout', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const options2 = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you want simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
+app.get('/ptz/reset', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera id: ' + req.query.id);
+  console.log('camera id: ' + req.body);
+  var data;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const options = {
+    method: 'PUT',
+    rejectUnauthorized: false,
+    // auth: "username:password" use it if you wnt simple auth
+    digestAuth: 'admin:password123',
+    content:
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+    headers: {
+      'Content-Type': 'application/xml',
+      //'Content-Type': 'application/json' use it if payload is json
+      //'Content-Type': 'application/text'
+    },
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(res.statusCode);
+    console.log(res.headers);
+    console.log(data.toString('utf8'));
+    data = data;
+  };
+  httpClient.request(url, options, responseHandler);
+  httpClient.request(url, options2, responseHandler);
+  res.status(200).end(data); // Responding is important
+});
+
 app.get('/temps', (req, res) => {
   console.log('camera url: ' + req.query.address);
   console.log('camera name: ' + req.query.name);
