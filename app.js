@@ -36,14 +36,14 @@ app.get('/ptz/left', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>-60</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>60</pan>\r\n    <tilt>0</tilt>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -85,14 +85,14 @@ app.get('/ptz/right', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>60</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>60</pan>\r\n    <tilt>0</tilt>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -134,14 +134,14 @@ app.get('/ptz/up', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>60</tilt>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>60</tilt>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -181,14 +181,14 @@ app.get('/ptz/down', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>-60</tilt>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>-60</tilt>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -228,7 +228,7 @@ app.get('/ptz/zoomin', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
@@ -275,14 +275,14 @@ app.get('/ptz/zoomout', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>-60</zoom>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -324,14 +324,14 @@ app.get('/ptz/reset', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   var data;
-  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
     // auth: "username:password" use it if you wnt simple auth
     digestAuth: 'admin:password123',
     content:
-      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
     headers: {
       'Content-Type': 'application/xml',
       //'Content-Type': 'application/json' use it if payload is json
@@ -392,6 +392,113 @@ app.get('/temps', (req, res) => {
   setTimeout(function () {
     res.status(200).json({ temp: resData }).end(); // Responding is important
   }, millisecondsToWait);
+});
+
+app.get('/temperatures', (req, res) => {
+  console.log('camera ip: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('camera channel id: ' + req.query.channleId);
+
+  //Data
+  const presetData = [];
+  const regionsData = [];
+  const tempData = [];
+
+  //get ptz presets
+  httpClient.request(
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channleId}/presets`,
+    {
+      method: 'GET',
+      rejectUnauthorized: false,
+      digestAuth: 'admin:password123',
+      dataType: 'json',
+      headers: {},
+    },
+    function (err, data, res) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(res.statusCode);
+      console.log(res.headers);
+      //save list of enabled presets
+      presetData =
+        data.ThermometryRulesTemperatureInfoList
+          .ThermometryRulesTemperatureInfo[0].averageTemperature;
+    }
+  );
+
+  presetData.forEach((preset) => {
+    //get preset regions info
+    httpClient.request(
+      `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channleId}/thermometry/${preset}`,
+      {
+        method: 'GET',
+        rejectUnauthorized: false,
+        digestAuth: 'admin:password123',
+        dataType: 'json',
+        headers: {},
+      },
+      function (err, data, res) {
+        if (err) {
+          console.log(err);
+        }
+        console.log(res.statusCode);
+        console.log(res.headers);
+        //save list of enabled region ID's + names
+        regionsData =
+          data.ThermometryRulesTemperatureInfoList
+            .ThermometryRulesTemperatureInfo[0].averageTemperature;
+      }
+    );
+    //navigate to preset
+    httpClient.request(
+      `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channleId}/presets/${preset}/goto`,
+      {
+        method: 'PUT',
+        rejectUnauthorized: false,
+        digestAuth: 'admin:password123',
+        content: {},
+        dataType: 'json',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      function (err, data, res) {
+        if (err) {
+          console.log(err);
+        }
+        console.log(res.statusCode);
+        console.log(res.headers);
+      }
+    );
+    regionsData.forEach((region) => {
+      //get temp data for each region
+      httpClient.request(
+        `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channleId}/thermometry/${preset}/rulesTemperatureInfo/${region}?format=json`,
+        {
+          method: 'GET',
+          rejectUnauthorized: false,
+          digestAuth: 'admin:password123',
+          dataType: 'json',
+          headers: {},
+        },
+        function (err, data, res) {
+          if (err) {
+            console.log(err);
+          }
+          console.log(res.statusCode);
+          console.log(res.headers);
+          var obj = {};
+          obj[`Preset:${preset} - Region:${region}`] =
+            data.ThermometryRulesTemperatureInfo.averageTemperature;
+          tempData.push(obj);
+        }
+      );
+    });
+  });
+  setTimeout(function () {
+    res.status(200).json({ temps: tempData }).end(); // Responding is important
+  }, 500);
 });
 
 app.listen(2000);
