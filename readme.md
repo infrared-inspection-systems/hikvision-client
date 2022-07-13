@@ -1,0 +1,1 @@
+/PTZCtrl/channels/<ID>/status

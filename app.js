@@ -3,6 +3,7 @@ const app = express();
 const { proxy, scriptUrl } = require('rtsp-relay')(app);
 var bodyParser = require('body-parser');
 const httpClient = require('urllib');
+var parseString = require('xml2js').parseString;
 
 const handler = proxy({
   url: `rtsp://admin:password123@192.168.0.127:554/Streaming/Channels/202`,
@@ -11,8 +12,6 @@ const handler = proxy({
   additionalFlags: ['-q', '1'],
 });
 
-// Go ahead and make them request!
-// the endpoint our RTSP uses
 app.use(bodyParser.json());
 app.ws('/api/stream', handler);
 
@@ -251,153 +250,184 @@ app.get('/ptz/reset', (req, res) => {
   res.status(200).end(data);
 });
 
-app.get('/temps', (req, res) => {
+app.get('/regions', (req, res) => {
   console.log('camera url: ' + req.query.address);
   console.log('camera name: ' + req.query.name);
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
-  var resData;
-  const url =
-    'http://192.168.0.127/ISAPI/Thermal/channels/2/thermometry/1/rulesTemperatureInfo?format=json';
+  console.log('preset id: ' + req.query.preset);
+  onsole.log('channel id: ' + req.query.channelId);
+  var resData = [];
+  const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${req.query.preset}`;
   const options = {
     method: 'GET',
     rejectUnauthorized: false,
-    // auth: "username:password" use it if you want simple auth
     digestAuth: 'admin:password123',
-    //content: 'Hello world. Data can be json or xml.',
-    dataType: 'json',
-    headers: {
-      //'Content-Type': 'application/xml'  use it if payload is xml
-      //'Content-Type': 'application/json' use it if payload is json
-      //'Content-Type': 'application/text'
-    },
+    dataType: 'text',
+    headers: {},
   };
   const responseHandler = (err, data, res) => {
     if (err) {
       console.log(err);
     }
-    console.log(res.statusCode);
-    console.log(res.headers);
-    console.log(
-      data.ThermometryRulesTemperatureInfoList
-        .ThermometryRulesTemperatureInfo[0].averageTemperature
-    );
-    resData =
-      data.ThermometryRulesTemperatureInfoList
-        .ThermometryRulesTemperatureInfo[0].averageTemperature;
+    parseString(data, function (err, result) {
+      console.dir(
+        result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion
+      );
+      var regions =
+        result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
+      regions.map(function (region) {
+        if (region.enabled[0] === 'true') {
+          var regionData = {
+            name: region.name[0],
+            id: region.id[0],
+          };
+          resData.push(regionData);
+        }
+      });
+    });
   };
-  var millisecondsToWait = 500;
+  var millisecondsToWait = 100;
   httpClient.request(url, options, responseHandler);
   setTimeout(function () {
-    res.status(200).json({ temp: resData }).end(); // Responding is important
+    res.status(200).json(resData).end();
+  }, millisecondsToWait);
+});
+
+app.get('/presets', (req, res) => {
+  console.log('camera url: ' + req.query.address);
+  console.log('camera name: ' + req.query.name);
+  console.log('channel id: ' + req.channelId);
+  var resData;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channleId}/patrols`;
+  const options = {
+    method: 'GET',
+    rejectUnauthorized: false,
+    digestAuth: 'admin:password123',
+    dataType: 'text',
+    headers: {},
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
+    }
+    parseString(data, function (err, result) {
+      var presets = [];
+      var patrols = result.PTZPatrolList;
+      patrols.map(function (patrol) {
+        if (patrol.enabled[0] === 'true') {
+          patrol.PatrolSequenceList.map(function (sequence) {
+            if (sequence.id[0] != 0) {
+              presets.push(sequence.id[0]);
+            }
+          });
+          resData = presets;
+        }
+      });
+    });
+  };
+  var millisecondsToWait = 100;
+  httpClient.request(url, options, responseHandler);
+  setTimeout(function () {
+    res.status(200).json(resData).end();
   }, millisecondsToWait);
 });
 
 app.get('/temperatures', (req, res) => {
   console.log('camera ip: ' + req.query.address);
-  console.log('camera name: ' + req.query.name);
-  console.log('camera channel id: ' + req.query.channleId);
+  console.log('camera channel id: ' + req.query.channelId);
+  console.log('camera preset id: ' + req.query.presetId);
+
+  //Get Presets
 
   //Data
-  const presetData = [];
-  const regionsData = [];
+  let regionsData = [];
   const tempData = [];
-
-  //get ptz presets
-  httpClient.request(
-    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channleId}/presets`,
-    {
-      method: 'GET',
-      rejectUnauthorized: false,
-      digestAuth: 'admin:password123',
-      dataType: 'json',
-      headers: {},
-    },
-    function (err, data, res) {
-      if (err) {
-        console.log(err);
-      }
-      console.log(res.statusCode);
-      console.log(res.headers);
-      //save list of enabled presets
-      presetData =
-        data.ThermometryRulesTemperatureInfoList
-          .ThermometryRulesTemperatureInfo[0].averageTemperature;
+  // Get Regions List
+  const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${req.query.presetId}`;
+  const options = {
+    method: 'GET',
+    rejectUnauthorized: false,
+    digestAuth: 'admin:password123',
+    dataType: 'text',
+    headers: {},
+  };
+  const responseHandler = (err, data, res) => {
+    if (err) {
+      console.log(err);
     }
-  );
+    parseString(data, function (err, result) {
+      var regions =
+        result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
+      regions.map(function (region) {
+        if (region.enabled[0] === 'true') {
+          var regionData = {
+            name: region.name[0],
+            id: region.id[0],
+          };
+          regionsData.push(regionData);
+        }
+      });
+    });
+  };
+  httpClient.request(url, options, responseHandler);
 
-  presetData.forEach((preset) => {
-    //get preset regions info
-    httpClient.request(
-      `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channleId}/thermometry/${preset}`,
-      {
-        method: 'GET',
-        rejectUnauthorized: false,
-        digestAuth: 'admin:password123',
-        dataType: 'json',
-        headers: {},
-      },
-      function (err, data, res) {
-        if (err) {
-          console.log(err);
-        }
-        console.log(res.statusCode);
-        console.log(res.headers);
-        //save list of enabled region ID's + names
-        regionsData =
-          data.ThermometryRulesTemperatureInfoList
-            .ThermometryRulesTemperatureInfo[0].averageTemperature;
-      }
-    );
-    //navigate to preset
-    httpClient.request(
-      `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channleId}/presets/${preset}/goto`,
-      {
-        method: 'PUT',
-        rejectUnauthorized: false,
-        digestAuth: 'admin:password123',
-        content: {},
-        dataType: 'json',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-      function (err, data, res) {
-        if (err) {
-          console.log(err);
-        }
-        console.log(res.statusCode);
-        console.log(res.headers);
-      }
-    );
+  //navigate to preset
+  // httpClient.request(
+  //   `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channleId}/presets/${req.query.presetId}/goto`,
+  //   {
+  //     method: 'PUT',
+  //     rejectUnauthorized: false,
+  //     digestAuth: 'admin:password123',
+  //     content: {},
+  //     dataType: 'json',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   },
+  //   function (err, data, res) {
+  //     if (err) {
+  //     }
+  //   }
+  // );
+  setTimeout(function () {
     regionsData.forEach((region) => {
       //get temp data for each region
-      httpClient.request(
-        `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channleId}/thermometry/${preset}/rulesTemperatureInfo/${region}?format=json`,
-        {
-          method: 'GET',
-          rejectUnauthorized: false,
-          digestAuth: 'admin:password123',
-          dataType: 'json',
-          headers: {},
-        },
-        function (err, data, res) {
-          if (err) {
-            console.log(err);
+      setTimeout(function () {
+        httpClient.request(
+          `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${req.query.presetId}/rulesTemperatureInfo/${region.id}?format=json`,
+          {
+            method: 'GET',
+            rejectUnauthorized: false,
+            digestAuth: 'admin:password123',
+            dataType: 'json',
+            headers: {},
+          },
+          function (err, data, res) {
+            if (err) {
+              console.log(err);
+            }
+            var obj = {};
+
+            obj[`${region.name}`] = {
+              id: region.id,
+              temp: data.ThermometryRulesTemperatureInfo.averageTemperature,
+              time: new Date(),
+            };
+            tempData.push(obj);
+            tempData.sort(function (a, b) {
+              return parseFloat(a.id) - parseFloat(b.id);
+            });
           }
-          console.log(res.statusCode);
-          console.log(res.headers);
-          var obj = {};
-          obj[`Preset:${preset} - Region:${region}`] =
-            data.ThermometryRulesTemperatureInfo.averageTemperature;
-          tempData.push(obj);
-        }
-      );
+        );
+      }, 500);
     });
-  });
-  setTimeout(function () {
-    res.status(200).json({ temps: tempData }).end(); // Responding is important
   }, 500);
+
+  setTimeout(function () {
+    console.log(tempData);
+    res.status(200).json(tempData).end();
+  }, 2000);
 });
 
 app.listen(2000);
