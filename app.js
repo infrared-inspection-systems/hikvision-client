@@ -29,6 +29,11 @@ app.get('/', (req, res) =>
   </script>
 `)
 );
+
+app.post("/hook", (req, res) => {
+  console.log(req.body) // Call your action on the request here
+  res.status(200).end() // Responding is important
+})
 app.get('/ptz/left', (req, res) => {
   console.log('camera url: ' + req.query.address);
   console.log('camera name: ' + req.query.name);
