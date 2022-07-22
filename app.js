@@ -318,7 +318,7 @@ app.get('/regions', (req, res) => {
   console.log('camera id: ' + req.query.id);
   console.log('camera id: ' + req.body);
   console.log('preset id: ' + req.query.preset);
-  onsole.log('channel id: ' + req.query.channelId);
+  console.log('channel id: ' + req.query.channelId);
   var resData = [];
   const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${req.query.preset}`;
   const options = {
