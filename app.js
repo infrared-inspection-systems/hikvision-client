@@ -35,7 +35,7 @@ app.get('/', (req, res) =>
 
 app.post('/hook', upload.none(), async (req, res, next) => {
   var response;
-  var detectionRegionEntry; 
+  var detectionRegionEntry;
   if (req.body.TMA != null) {
     await parseString(req.body.TMA.toString(), (err, result) => {
       if (err) {
@@ -62,16 +62,13 @@ app.post('/hook', upload.none(), async (req, res, next) => {
         },
       });
     });
-  }
-  else if(req.body.linedetection != null){
+  } else if (req.body.linedetection != null) {
     await parseString(req.body.linedetection.toString(), (err, result) => {
       if (err) {
         throw err;
       }
       json = JSON.stringify(result, null, 2);
-      console.log(json)
       response = result;
-      
     });
     detectionRegionEntry = await response.EventNotificationAlert
       .DetectionRegionList[0].DetectionRegionEntry;
