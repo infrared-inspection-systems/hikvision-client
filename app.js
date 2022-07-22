@@ -35,7 +35,7 @@ app.get('/', (req, res) =>
 
 app.post('/hook', upload.none(), async (req, res, next) => {
   var response;
-  var detectionRegionEntry;
+  var detectionRegionEntry; 
   if (req.body.TMA != null) {
     await parseString(req.body.TMA.toString(), (err, result) => {
       if (err) {
@@ -49,7 +49,7 @@ app.post('/hook', upload.none(), async (req, res, next) => {
 
     detectionRegionEntry.forEach(async (region) => {
       console.log(region);
-      await httpClient.request('http://localhost:8081/api/notifications', {
+      await httpClient.request('http://localhost:8083/api/notifications', {
         method: 'POST',
         data: {
           channel: `${response.EventNotificationAlert.channelID[0]}`,
@@ -58,6 +58,35 @@ app.post('/hook', upload.none(), async (req, res, next) => {
           message: `${region.TMA[0].ruleType[0]} ${region.TMA[0].ruleTemperature[0]} ${region.TMA[0].thermometryUnit[0]} (CurrentTemp:${region.TMA[0].currTemperature[0]} ${region.TMA[0].thermometryUnit[0]})`,
           trigger: 'temperature_measurement_alert',
           label: 'temperature_measurement_alert',
+          type: 'WARN',
+        },
+      });
+    });
+  }
+  else if(req.body.linedetection != null){
+    await parseString(req.body.linedetection.toString(), (err, result) => {
+      if (err) {
+        throw err;
+      }
+      json = JSON.stringify(result, null, 2);
+      console.log(json)
+      response = result;
+      
+    });
+    detectionRegionEntry = await response.EventNotificationAlert
+      .DetectionRegionList[0].DetectionRegionEntry;
+
+    detectionRegionEntry.forEach(async (region) => {
+      console.log(region);
+      await httpClient.request('http://localhost:8083/api/notifications', {
+        method: 'POST',
+        data: {
+          channel: `${response.EventNotificationAlert.channelID[0]}`,
+          ip: `${response.EventNotificationAlert.ipAddress[0]}`,
+          region: `${region.regionID[0]}`,
+          message: `Intrusion Alert (${response.EventNotificationAlert.ruleName[0]}) @ region: ${region.regionID[0]} - scene:${region.sceneID[0]}`,
+          trigger: 'line_detection',
+          label: 'intrusion',
           type: 'WARN',
         },
       });
