@@ -402,7 +402,7 @@ app.get('/goto', (req, res) => {
   console.log('channel id: ' + req.query.channelId);
   console.log('preset id: ' + req.query.presetId);
   var resData;
-  const url = `http://${req.query.address}/ISAPI/PTZControl/channels/${req.query.channelId}/presets/${req.query.presetId}/goto`;
+  const url = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channelId}/presets/${req.query.presetId}/goto`;
   const options = {
     method: 'PUT',
     rejectUnauthorized: false,
