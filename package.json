@@ -1,7 +1,7 @@
 {
-  "name": "example-rtsp-relay",
+  "name": "hikvision-client",
   "version": "1.0.0",
-  "description": "Convert Hikvision rtsp video feed into media for web",
+  "description": "Utilities to control hikvision camera operations via api requests.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
