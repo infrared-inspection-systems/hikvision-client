@@ -556,7 +556,7 @@ app.get('/temperatures', async function (req, res) {
   });
 
   console.log(tempData);
-  res.status(200).json(tempData).end();
+  await res.status(200).json(tempData).end();
 });
 
 app.listen(2000);
