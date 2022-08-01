@@ -502,7 +502,7 @@ app.get(
                 id: region.id[0],
               };
               console.log(regionData);
-              await regionsData.push(regionData);
+              regionsData.push(regionData);
             }
           });
         });
