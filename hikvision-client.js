@@ -491,7 +491,8 @@ app.get(
         if (err) {
           console.log(err);
         }
-        parseString(data, function (err, result) {
+        console.log(res)
+        await parseString(data, async function (err, result) {
           var regions =
             result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
           regions.map(function (region) {
@@ -501,7 +502,7 @@ app.get(
                 id: region.id[0],
               };
               console.log(regionData);
-              regionsData.push(regionData);
+              await regionsData.push(regionData);
             }
           });
         });
