@@ -443,7 +443,6 @@ app.get(
     let presetData = [];
 
     // Get Presets
-    var resData;
     const presetUrl = `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channelId}/patrols`;
     const presetOptions = {
       method: 'GET',
@@ -475,7 +474,7 @@ app.get(
         });
       });
     };
-    await httpClient.request(presetUrl, presetOptions, presetHandler);
+    const { data, res } = await httpClient.request(presetUrl, presetOptions, presetHandler);
 
     // Get Regions List
     presetData.forEach(async function (preset) {
@@ -506,7 +505,7 @@ app.get(
             }
           });
         });
-        await httpClient.request(
+        const { data, res } = await httpClient.request(
           `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channelId}/presets/${preset}/goto`,
           {
             method: 'PUT',
@@ -527,7 +526,7 @@ app.get(
 
         regionsData.forEach(async function (region) {
           //get temp data for each region
-          await httpClient.request(
+          const { data, res } = await httpClient.request(
             `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/1/rulesTemperatureInfo/${region.id}?format=json`,
             {
               method: 'GET',
@@ -556,7 +555,7 @@ app.get(
           );
         });
       };
-      await httpClient.request(url, options, responseHandler);
+      const { data, res } = await httpClient.request(url, options, responseHandler);
       console.log(regionsData);
     });
 
