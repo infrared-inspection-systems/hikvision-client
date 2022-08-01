@@ -427,7 +427,7 @@ app.get('/goto', (req, res) => {
   }, millisecondsToWait);
 });
 
-app.get('/temperatures', (req, res) => {
+app.get('/temperatures', async function (req, res) {
   console.log('camera ip: ' + req.query.address);
   console.log('camera channel id: ' + req.query.channelId);
   console.log('camera preset id: ' + req.query.presetId);
@@ -449,7 +449,7 @@ app.get('/temperatures', (req, res) => {
     dataType: 'text',
     headers: {},
   };
-  const presetHandler = (err, data, res) => {
+  const presetHandler = async function (err, data, res){
     if (err) {
       console.log(err);
     }
@@ -470,101 +470,93 @@ app.get('/temperatures', (req, res) => {
       });
     });
   };
-  httpClient.request(presetUrl, presetOptions, presetHandler);
+  await httpClient.request(presetUrl, presetOptions, presetHandler);
 
   // Get Regions List
-  setTimeout(function () {
-    presetData.forEach((preset) => {
-      const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${preset}`;
-      const options = {
-        method: 'GET',
-        rejectUnauthorized: false,
-        digestAuth: 'admin:password123',
-        dataType: 'text',
-        headers: {},
-      };
-      const responseHandler = (err, data, res) => {
-        if (err) {
-          console.log(err);
-        }
-        parseString(data, function (err, result) {
-          var regions =
-            result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
-          regions.map(function (region) {
-            if (region.enabled[0] === 'true') {
-              var regionData = {
-                name: region.name[0],
-                id: region.id[0],
-              };
-              console.log(regionData);
-              regionsData.push(regionData);
-            }
-          });
+  presetData.forEach(async function (preset){
+    const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${preset}`;
+    const options = {
+      method: 'GET',
+      rejectUnauthorized: false,
+      digestAuth: 'admin:password123',
+      dataType: 'text',
+      headers: {},
+    };
+    const responseHandler = async function (err, data, res){
+      if (err) {
+        console.log(err);
+      }
+      parseString(data, function (err, result) {
+        var regions =
+          result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
+        regions.map(function (region) {
+          if (region.enabled[0] === 'true') {
+            var regionData = {
+              name: region.name[0],
+              id: region.id[0],
+            };
+            console.log(regionData);
+            regionsData.push(regionData);
+          }
         });
-        httpClient.request(
-          `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channelId}/presets/${preset}/goto`,
+      });
+      await httpClient.request(
+        `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.channelId}/presets/${preset}/goto`,
+        {
+          method: 'PUT',
+          rejectUnauthorized: false,
+          digestAuth: 'admin:password123',
+          content: {},
+          dataType: 'json',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+        async function (err, data, res) {
+          if (err) {
+          }
+          console.log('wemoved');
+        }
+      );
+
+      regionsData.forEach(async function (region){
+        //get temp data for each region
+        await httpClient.request(
+          `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/1/rulesTemperatureInfo/${region.id}?format=json`,
           {
-            method: 'PUT',
+            method: 'GET',
             rejectUnauthorized: false,
             digestAuth: 'admin:password123',
-            content: {},
             dataType: 'json',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: {},
           },
-          function (err, data, res) {
+          async function (err, data, res) {
             if (err) {
+              console.log(err);
             }
-            console.log('wemoved');
+            var obj = {};
+
+            obj[`${region.name}`] = {
+              id: region.id,
+              temp: data.ThermometryRulesTemperatureInfo
+                .averageTemperature,
+              time: new Date(),
+            };
+            console.log(obj);
+            tempData.push(obj);
+            tempData.sort(function (a, b) {
+              return parseFloat(a.id) - parseFloat(b.id);
+            });
           }
         );
+      });
+    };
+    await httpClient.request(url, options, responseHandler);
+    console.log(regionsData);
+  });
 
-        setTimeout(function () {
-          regionsData.forEach((region) => {
-            //get temp data for each region
-            setTimeout(function () {
-              httpClient.request(
-                `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${req.query.presetId}/rulesTemperatureInfo/${region.id}?format=json`,
-                {
-                  method: 'GET',
-                  rejectUnauthorized: false,
-                  digestAuth: 'admin:password123',
-                  dataType: 'json',
-                  headers: {},
-                },
-                function (err, data, res) {
-                  if (err) {
-                    console.log(err);
-                  }
-                  var obj = {};
-
-                  obj[`${region.name}`] = {
-                    id: region.id,
-                    temp: data.ThermometryRulesTemperatureInfo
-                      .averageTemperature,
-                    time: new Date(),
-                  };
-                  console.log(obj);
-                  tempData.push(obj);
-                  tempData.sort(function (a, b) {
-                    return parseFloat(a.id) - parseFloat(b.id);
-                  });
-                }
-              );
-            }, 1000);
-          });
-        }, 5000);
-      };
-      httpClient.request(url, options, responseHandler);
-      console.log(regionsData);
-    });
-  }, 5000);
-
-  setTimeout(function () {
-    console.log(tempData);
-    res.status(200).json(tempData).end();
-  }, 15000);
+  console.log(tempData);
+  res.status(200).json(tempData).end();
 });
 
 app.listen(2000);
