@@ -7,6 +7,7 @@ const httpClient = require('urllib');
 var parseString = require('xml2js').parseString;
 const multer = require('multer');
 const upload = multer();
+const asyncHandler = require('express-async-handler')
 
 const handler = proxy({
   url: `rtsp://admin:password123@192.168.0.127:554/Streaming/Channels/202`,
@@ -427,7 +428,7 @@ app.get('/goto', (req, res) => {
   }, millisecondsToWait);
 });
 
-app.get('/temperatures', async function (req, res) {
+app.get('/temperatures', asyncHandler(async function (req, res) {
   console.log('camera ip: ' + req.query.address);
   console.log('camera channel id: ' + req.query.channelId);
   console.log('camera preset id: ' + req.query.presetId);
@@ -473,7 +474,7 @@ app.get('/temperatures', async function (req, res) {
   await httpClient.request(presetUrl, presetOptions, presetHandler);
 
   // Get Regions List
-  presetData.forEach(async function (preset){
+  presetData.forEach(async function (preset) {
     const url = `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/${preset}`;
     const options = {
       method: 'GET',
@@ -482,13 +483,12 @@ app.get('/temperatures', async function (req, res) {
       dataType: 'text',
       headers: {},
     };
-    const responseHandler = async function (err, data, res){
+    const responseHandler = async function (err, data, res) {
       if (err) {
         console.log(err);
       }
       parseString(data, function (err, result) {
-        var regions =
-          result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
+        var regions = result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
         regions.map(function (region) {
           if (region.enabled[0] === 'true') {
             var regionData = {
@@ -519,7 +519,7 @@ app.get('/temperatures', async function (req, res) {
         }
       );
 
-      regionsData.forEach(async function (region){
+      regionsData.forEach(async function (region) {
         //get temp data for each region
         await httpClient.request(
           `http://${req.query.address}/ISAPI/Thermal/channels/${req.query.channelId}/thermometry/1/rulesTemperatureInfo/${region.id}?format=json`,
@@ -552,7 +552,7 @@ app.get('/temperatures', async function (req, res) {
       });
     };
     await httpClient.request(url, options, responseHandler);
-    console.log(regionsData);
+    console.log(regionsData);)
   });
 
   console.log(tempData);
