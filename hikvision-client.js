@@ -224,13 +224,13 @@ app.get('/ptz/zoomin', (req, res) => {
   console.log('camera id: ' + req.body);
   var data;
   httpClient.request(
-    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`,
     {
       method: 'PUT',
       rejectUnauthorized: false,
       digestAuth: 'admin:password123',
       content:
-        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n</PTZData>',
+        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n<Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
       headers: {
         'Content-Type': 'application/xml',
       },
@@ -246,28 +246,6 @@ app.get('/ptz/zoomin', (req, res) => {
     }
   );
 
-  httpClient.request(
-    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
-    {
-      method: 'PUT',
-      rejectUnauthorized: false,
-      digestAuth: 'admin:password123',
-      content:
-        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>0</zoom>\r\n</PTZData>',
-      headers: {
-        'Content-Type': 'application/xml',
-      },
-    },
-    function (err, data, res) {
-      if (err) {
-        console.log(err);
-      }
-      console.log(res.statusCode);
-      console.log(res.headers);
-      console.log(data.toString('utf8'));
-      data = data;
-    }
-  );
   res.status(200).end(data); // Responding is important
 });
 
