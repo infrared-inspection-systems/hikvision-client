@@ -230,7 +230,7 @@ app.get('/ptz/zoomin', (req, res) => {
       rejectUnauthorized: false,
       digestAuth: 'admin:password123',
       content:
-        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n<Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
+      '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <pan>0</pan>\r\n    <tilt>0</tilt>\r\n  <zoom>60</zoom>\r\n  <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
       headers: {
         'Content-Type': 'application/xml',
       },
