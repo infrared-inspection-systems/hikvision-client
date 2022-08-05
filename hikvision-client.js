@@ -224,13 +224,36 @@ app.get('/ptz/zoomin', (req, res) => {
   console.log('camera id: ' + req.body);
   var data;
   httpClient.request(
-    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`,
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
     {
       method: 'PUT',
       rejectUnauthorized: false,
       digestAuth: 'admin:password123',
       content:
-        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>-60</zoom>\r\n</PTZData>',
+        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>60</zoom>\r\n</PTZData>',
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+    },
+    function (err, data, res) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(res.statusCode);
+      console.log(res.headers);
+      console.log(data.toString('utf8'));
+      data = data;
+    }
+  );
+
+  httpClient.request(
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
+    {
+      method: 'PUT',
+      rejectUnauthorized: false,
+      digestAuth: 'admin:password123',
+      content:
+        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>0</zoom>\r\n</PTZData>',
       headers: {
         'Content-Type': 'application/xml',
       },
@@ -255,14 +278,40 @@ app.get('/ptz/zoomout', (req, res) => {
   console.log('camera id: ' + req.body);
   var data;
   httpClient.request(
-    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/momentary`,
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
     {
       method: 'PUT',
       rejectUnauthorized: false,
       // auth: "username:password" use it if you want simple auth
       digestAuth: 'admin:password123',
       content:
-        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>-60</zoom>\r\n    <Momentary>\r\n        <duration>500</duration>\r\n    </Momentary>\r\n</PTZData>',
+        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n    <zoom>-60</zoom>\r\n     </PTZData>',
+      headers: {
+        'Content-Type': 'application/xml',
+        //'Content-Type': 'application/json' use it if payload is json
+        //'Content-Type': 'application/text'
+      },
+    },
+    function (err, data, res) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(res.statusCode);
+      console.log(res.headers);
+      console.log(data.toString('utf8'));
+      data = data;
+    }
+  );
+
+  httpClient.request(
+    `http://${req.query.address}/ISAPI/PTZCtrl/channels/${req.query.id}/continuous`,
+    {
+      method: 'PUT',
+      rejectUnauthorized: false,
+      // auth: "username:password" use it if you want simple auth
+      digestAuth: 'admin:password123',
+      content:
+        '<?xml version: "1.0" encoding="UTF-8"?>\r\n<PTZData>\r\n<zoom>0</zoom>\r\n</PTZData>',
       headers: {
         'Content-Type': 'application/xml',
         //'Content-Type': 'application/json' use it if payload is json
@@ -491,7 +540,7 @@ app.get(
         if (err) {
           console.log(err);
         }
-        console.log(res)
+        console.log(res);
         await parseString(data, async function (err, result) {
           var regions =
             result.ThermometryScene.ThermometryRegionList[0].ThermometryRegion;
